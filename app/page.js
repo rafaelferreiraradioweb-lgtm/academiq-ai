@@ -6,7 +6,7 @@ export default function Home() {
   const [passo, setPasso] = useState(1);
   const [area, setArea] = useState('');
   const [tema, setTema] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
+  const [email, setEmail] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('');
 
@@ -25,15 +25,15 @@ export default function Home() {
     setCarregando(true);
     setStatusMensagem('');
 
-    const resultado = await salvarUsuarioDoSite({ area, tema, whatsapp });
+    const resultado = await salvarUsuarioDoSite({ area, tema, email });
     setCarregando(false);
 
     if (resultado.success) {
-      setStatusMensagem('🎉 Sucesso! Seu tema foi recebido. Agora ative o robô para receber os resumos e fontes na estrutura da ABNT.');
+      setStatusMensagem('🎉 Sucesso! Seu tema foi recebido. Fique de olho na sua caixa de entrada, nossa IA enviará a pesquisa em breve.');
       setPasso(4);
     } else {
-      setStatusMensagem('❌ Ops! Falha ao conectar. Lembre-se de configurar as chaves do Supabase na Vercel.');
-      setPasso(4); // Vai para a tela final de qualquer forma para não travar o teste visual
+      setStatusMensagem('❌ Ops! Falha ao conectar ao banco de dados. Verifique as chaves na Vercel.');
+      setPasso(4); 
     }
   };
 
@@ -94,7 +94,7 @@ export default function Home() {
             <textarea
               value={tema}
               onChange={(e) => setTema(e.target.value)}
-              placeholder="Ex: O uso de aplicativos de entrega e o impacto na saúde mental dos entregadores em capitais brasileiras..."
+              placeholder="Ex: O uso de inteligência artificial no ensino médio..."
               className="w-full h-32 p-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 placeholder-slate-500 text-sm mb-6 resize-none"
             />
 
@@ -113,19 +113,19 @@ export default function Home() {
           </div>
         )}
 
-        {/* PASSO 3 */}
+        {/* PASSO 3: MUDOU PARA E-MAIL */}
         {passo === 3 && (
           <form onSubmit={finalizarCadastro}>
             <h2 className="text-xl font-bold mb-2">Passo 3: Onde quer receber sua pesquisa?</h2>
-            <p className="text-slate-400 text-sm mb-6">Nossa IA vai te enviar os resumos e fontes formatadas em ABNT direto no seu celular.</p>
+            <p className="text-slate-400 text-sm mb-6">Nossa IA vai preparar um relatório com fontes ABNT e enviar direto para o seu e-mail.</p>
             
             <div className="mb-6">
-              <label className="block text-xs font-semibold uppercase text-slate-400 mb-2 tracking-wider">Número do WhatsApp com DDD</label>
+              <label className="block text-xs font-semibold uppercase text-slate-400 mb-2 tracking-wider">Seu Melhor E-mail</label>
               <input
-                type="tel"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
-                placeholder="Ex: 82999998888"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="exemplo@gmail.com"
                 className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 placeholder-slate-500 text-sm"
                 required
               />
@@ -140,7 +140,7 @@ export default function Home() {
                 disabled={carregando}
                 className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-lime-400 text-slate-950 rounded-xl font-bold hover:shadow-lg hover:shadow-lime-500/20 transition-all text-sm disabled:opacity-50"
               >
-                {carregando ? 'Salvando...' : 'Ativar Robô no WhatsApp 🚀'}
+                {carregando ? 'Processando...' : 'Gerar Pesquisa 🚀'}
               </button>
             </div>
           </form>
@@ -149,18 +149,11 @@ export default function Home() {
         {/* PASSO 4 */}
         {passo === 4 && (
           <div className="text-center py-6">
-            <span className="text-5xl block mb-4">🤖🔥</span>
+            <span className="text-5xl block mb-4">📧✨</span>
             <h2 className="text-2xl font-bold text-lime-400 mb-4">Tudo Pronto!</h2>
             <p className="text-slate-300 text-sm leading-relaxed max-w-md mx-auto mb-6">
               {statusMensagem}
             </p>
-            <a 
-              href="https://wa.me/5582999999999" 
-              target="_blank" 
-              className="inline-block bg-emerald-500 text-slate-950 font-extrabold px-8 py-3 rounded-xl hover:bg-emerald-400 transition-all text-sm shadow-lg shadow-emerald-500/20"
-            >
-              Chamar no WhatsApp Agora
-            </a>
           </div>
         )}
 
