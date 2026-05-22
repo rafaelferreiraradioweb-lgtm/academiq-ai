@@ -1,1 +1,1 @@
-# academiq-ai
+# tccacademiq-ai
