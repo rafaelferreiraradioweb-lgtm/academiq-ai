@@ -16,9 +16,9 @@ export async function salvarUsuarioDoSite(dados) {
     
     if (dbError) throw new Error(`SUPABASE: ${dbError.message}`);
 
-    // 2. TENTA O GEMINI (Nome do modelo corrigido para gemini-pro)
+    // 2. TENTA O GEMINI (Motor atualizado e modelo 1.5 Flash)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = `Atue como um assistente acadêmico especialista em ABNT. O aluno é da área de ${area} e o tema do TCC é: "${tema}". Crie um resumo acadêmico de 2 parágrafos sobre o tema e sugira 3 referências bibliográficas realistas, formatadas rigorosamente nas normas da ABNT. Formate sua resposta APENAS em HTML básico usando tags como <h2>, <b>, <p> e <br>. Não use markdown.`;
     
     const result = await model.generateContent(prompt).catch(e => { throw new Error(`GEMINI: ${e.message}`) });
