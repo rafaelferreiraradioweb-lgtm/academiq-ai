@@ -25,11 +25,9 @@ export default function Home() {
     setCarregando(true);
     setStatusMensagem('');
 
-    // Chama o backend
     const resultado = await salvarUsuarioDoSite({ area, tema, email });
     
     setCarregando(false);
-    // Agora ele mostra a mensagem EXATA que o backend mandar, seja sucesso ou erro!
     setStatusMensagem(resultado.message);
     setPasso(4);
   };
@@ -115,12 +113,9 @@ export default function Home() {
         {passo === 4 && (
           <div className="text-center py-6">
             <h2 className="text-2xl font-bold text-lime-400 mb-4">Resultado:</h2>
-            
-            {/* Caixa que vai exibir a verdade crua do backend */}
             <div className="p-4 bg-slate-800 rounded-lg border border-slate-700 text-slate-100 text-sm break-words">
               {statusMensagem}
             </div>
-
             <button onClick={() => setPasso(1)} className="mt-8 px-6 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold text-slate-200 transition-all">
               Tentar Novamente
             </button>
