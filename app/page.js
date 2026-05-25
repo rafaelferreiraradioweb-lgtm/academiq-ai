@@ -25,16 +25,13 @@ export default function Home() {
     setCarregando(true);
     setStatusMensagem('');
 
+    // Chama o backend
     const resultado = await salvarUsuarioDoSite({ area, tema, email });
+    
     setCarregando(false);
-
-    if (resultado.success) {
-      setStatusMensagem('🎉 Sucesso! Seu tema foi recebido. Fique de olho na sua caixa de entrada, nossa IA enviará a pesquisa em breve.');
-      setPasso(4);
-    } else {
-      setStatusMensagem('❌ Ops! Falha ao conectar ao banco de dados. Verifique as chaves na Vercel.');
-      setPasso(4); 
-    }
+    // Agora ele mostra a mensagem EXATA que o backend mandar, seja sucesso ou erro!
+    setStatusMensagem(resultado.message);
+    setPasso(4);
   };
 
   return (
@@ -59,104 +56,76 @@ export default function Home() {
           </div>
         )}
 
-        {/* PASSO 1 */}
         {passo === 1 && (
           <div>
             <h2 className="text-xl font-bold mb-2">Passo 1: Qual a área do seu curso?</h2>
-            <p className="text-slate-400 text-sm mb-6">Isso ajuda nossa IA a buscar nos repositórios científicos certos.</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 mt-4">
               {areasDoCurso.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => { setArea(item.id); avancar(); }}
                   className={`p-4 rounded-xl border text-left transition-all ${
-                    area === item.id 
-                      ? 'border-lime-400 bg-lime-500/10' 
-                      : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                    area === item.id ? 'border-lime-400 bg-lime-500/10' : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                   }`}
                 >
                   <span className="text-2xl mb-2 block">{item.emoji}</span>
                   <span className="font-semibold block">{item.nome}</span>
-                  <span className="text-xs text-slate-400">{item.desc}</span>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* PASSO 2 */}
         {passo === 2 && (
           <div>
-            <h2 className="text-xl font-bold mb-2">Passo 2: Qual o tema ou ideia do seu TCC?</h2>
-            <p className="text-slate-400 text-sm mb-4">Escreva de forma simples, como se estivesse explicando para um amigo.</p>
-            
+            <h2 className="text-xl font-bold mb-2">Passo 2: Qual o tema ou ideia do TCC?</h2>
             <textarea
               value={tema}
               onChange={(e) => setTema(e.target.value)}
-              placeholder="Ex: O uso de inteligência artificial no ensino médio..."
-              className="w-full h-32 p-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 placeholder-slate-500 text-sm mb-6 resize-none"
+              placeholder="Ex: O impacto da inteligência artificial..."
+              className="w-full h-32 p-4 mt-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 mb-6 resize-none"
             />
-
             <div className="flex justify-between">
-              <button onClick={voltar} className="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-medium">
-                Voltar
-              </button>
-              <button 
-                onClick={avancar} 
-                disabled={!tema.trim()} 
-                className="px-6 py-2.5 bg-lime-400 text-slate-950 rounded-xl font-semibold hover:bg-lime-300 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Continuar
-              </button>
+              <button onClick={voltar} className="px-5 py-2.5 rounded-xl border border-slate-700">Voltar</button>
+              <button onClick={avancar} disabled={!tema.trim()} className="px-6 py-2.5 bg-lime-400 text-slate-950 rounded-xl font-semibold disabled:opacity-50">Continuar</button>
             </div>
           </div>
         )}
 
-        {/* PASSO 3: MUDOU PARA E-MAIL */}
         {passo === 3 && (
           <form onSubmit={finalizarCadastro}>
-            <h2 className="text-xl font-bold mb-2">Passo 3: Onde quer receber sua pesquisa?</h2>
-            <p className="text-slate-400 text-sm mb-6">Nossa IA vai preparar um relatório com fontes ABNT e enviar direto para o seu e-mail.</p>
-            
-            <div className="mb-6">
-              <label className="block text-xs font-semibold uppercase text-slate-400 mb-2 tracking-wider">Seu Melhor E-mail</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="exemplo@gmail.com"
-                className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 placeholder-slate-500 text-sm"
-                required
-              />
-            </div>
-
+            <h2 className="text-xl font-bold mb-2">Passo 3: Para qual e-mail enviar?</h2>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="exemplo@gmail.com"
+              className="w-full p-4 mt-4 bg-slate-800 border border-slate-700 rounded-xl focus:border-lime-400 focus:outline-none text-slate-100 mb-6"
+              required
+            />
             <div className="flex justify-between">
-              <button type="button" onClick={voltar} disabled={carregando} className="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-medium disabled:opacity-50">
-                Voltar
-              </button>
-              <button 
-                type="submit"
-                disabled={carregando}
-                className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-lime-400 text-slate-950 rounded-xl font-bold hover:shadow-lg hover:shadow-lime-500/20 transition-all text-sm disabled:opacity-50"
-              >
-                {carregando ? 'Processando...' : 'Gerar Pesquisa 🚀'}
+              <button type="button" onClick={voltar} disabled={carregando} className="px-5 py-2.5 rounded-xl border border-slate-700 disabled:opacity-50">Voltar</button>
+              <button type="submit" disabled={carregando} className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-lime-400 text-slate-950 rounded-xl font-bold disabled:opacity-50">
+                {carregando ? 'Processando IA...' : 'Gerar Pesquisa 🚀'}
               </button>
             </div>
           </form>
         )}
 
-        {/* PASSO 4 */}
         {passo === 4 && (
           <div className="text-center py-6">
-            <span className="text-5xl block mb-4">📧✨</span>
-            <h2 className="text-2xl font-bold text-lime-400 mb-4">Tudo Pronto!</h2>
-            <p className="text-slate-300 text-sm leading-relaxed max-w-md mx-auto mb-6">
+            <h2 className="text-2xl font-bold text-lime-400 mb-4">Resultado:</h2>
+            
+            {/* Caixa que vai exibir a verdade crua do backend */}
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700 text-slate-100 text-sm break-words">
               {statusMensagem}
-            </p>
+            </div>
+
+            <button onClick={() => setPasso(1)} className="mt-8 px-6 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold text-slate-200 transition-all">
+              Tentar Novamente
+            </button>
           </div>
         )}
-
       </div>
     </div>
   );
